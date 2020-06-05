@@ -66,6 +66,8 @@ function ExecuteScript()
 		
 		var audio = document.querySelector('#APlay'),
 			volume = document.querySelector('#AVol'),
+			pitch = document.querySelector('#APitch'),
+			pitchBut = document.querySelector('#APitchBut'),
 			oscilog = document.querySelector('#AOsci'),
 			DownlBut = document.querySelector('#ADownl'),
 			StopRecBut = document.querySelector('#AStopRec'),
@@ -85,6 +87,8 @@ function ExecuteScript()
 		var mediaRecorder = new MediaRecorder(dest.stream);
 		
 		var gain = context.createGain();
+		Tone.context = context;
+		var pitchShift = new Tone.PitchShift();
 		gain.gain.value = 1;
 		var Track, bufferLengthOsci, bufferLengthSpec, analyserOsci, analyserSpec, dataArrayOsci, dataArraySpec;
 		var now = context.currentTime;
@@ -94,8 +98,17 @@ function ExecuteScript()
 		var analyserSpecCheck=false;
 		var chunks = [];
 		var file;
-		var pitchShiftValue;
 		
+		pitchBut.addEventListener('click', function(){
+			Tone.disconnect(Track, pitchShift);
+			Tone.disconnect(pitchShift, gain);
+			pitchShift = new Tone.PitchShift();
+			Tone.connect(Track, pitchShift);
+			Tone.connect(pitchShift, gain);
+			// pitchShift.windowSize = 0.07;
+			pitchShift.pitch=pitch.value;
+		});
+
 		files.addEventListener('change', function(){
 			audio.src = URL.createObjectURL(this.files[0]); 
 		});
@@ -132,18 +145,10 @@ function ExecuteScript()
 			context.resume();
 			try{
 				Track = context.createMediaElementSource(this);
-					
-				Track.connect(gain);
-				// gain.connect(dest);
-				
-				Tone.context = context;
-				var pitchShift = new Tone.PitchShift();
-				// pitchShift.pitch+=12;
-				Tone.connect(gain, pitchShift);
-				Tone.connect(pitchShift, context.destination);
-				Tone.connect(pitchShift, dest);
-				
-				// gain.connect(context.destination);
+				Tone.connect(Track, pitchShift);
+				Tone.connect(pitchShift, gain);
+				gain.connect(dest);
+				gain.connect(context.destination);
 				StartRecBut.hidden=false;
 			}
 			catch (error)
@@ -152,6 +157,7 @@ function ExecuteScript()
 			}
 			spectra.hidden=false;
 			oscilog.hidden=false;
+			pitchBut.hidden=false;
 		});
 		
 		audio.addEventListener('timeupdate', function(){
