@@ -145,6 +145,9 @@ function ExecuteScript()
 			context.resume();
 			try{
 				Track = context.createMediaElementSource(this);
+				
+				audio.mozPreservesPitch = false;
+
 				Tone.connect(Track, pitchShift);
 				Tone.connect(pitchShift, gain);
 				gain.connect(dest);
@@ -162,7 +165,7 @@ function ExecuteScript()
 		
 		audio.addEventListener('timeupdate', function(){
 			if(!isNaN(audio.currentTime)) {
-				audio.playbackRate = 1;
+				audio.playbackRate = 0.75;
 			}
 		});
 		
