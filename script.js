@@ -67,6 +67,8 @@ function ExecuteScript()
 		var audio = document.querySelector('#APlay'),
 			volume = document.querySelector('#AVol'),
 			pitch = document.querySelector('#APitch'),
+			EQ = document.querySelector('#AEQ'),
+			EQgain = document.querySelector('#EQgain'),
 			fullRec = document.querySelector('#AFullTrack'),
 			oscilog = document.querySelector('#AOsci'),
 			DownlBut = document.querySelector('#ADownl'),
@@ -81,7 +83,7 @@ function ExecuteScript()
 			
 		
 		var context = new (window.AudioContext || window.webkitAudioContext);
-		
+		var aFilter = context.createBiquadFilter();
 		var dest = context.createMediaStreamDestination();
 		
 		var mediaRecorder = new MediaRecorder(dest.stream);
@@ -97,28 +99,52 @@ function ExecuteScript()
 		analyserSpec = context.createAnalyser();
 		var analyserOsciCheck=false;
 		var analyserSpecCheck=false;
+		var recCheck=false;
 		var chunks = [];
 		var file;
-		var recCheck=false;
+		var button;
+		var radEQ=document.getElementsByName('EQ');
 		
 		pitch.addEventListener('input', function(){
 			Tone.disconnect(Track, pitchShift);
-			Tone.disconnect(pitchShift, gain);
+			Tone.disconnect(pitchShift, aFilter);
 			pitchShift = new Tone.PitchShift();
 			Tone.connect(Track, pitchShift);
-			Tone.connect(pitchShift, gain);
+			Tone.connect(pitchShift, aFilter);
 			pitchShift.pitch=pitch.value;
 			document.querySelector("#APitchVis").textContent=pitch.value;
+		});
+
+		EQ.addEventListener('input', function(){
+			aFilter.frequency.value=EQ.value;
+			document.querySelector('#AEQVis').textContent=EQ.value + ' Hz';
+		});
+		
+		EQ.addEventListener('dblclick',function(){
+			EQ.value=1000;
+			aFilter.frequency.value=EQ.value;
+			document.querySelector('#AEQVis').textContent=EQ.value + ' Hz';
+		});
+
+		EQgain.addEventListener('input', function(){
+			aFilter.gain.value=EQgain.value;
+			document.querySelector('#AEQgainVis').textContent=EQgain.value + ' db';
+		});
+		
+		EQgain.addEventListener('dblclick',function(){
+			EQgain.value=0;
+			aFilter.gain.value=EQgain.value;
+			document.querySelector('#AEQgainVis').textContent=EQgain.value + ' db';
 		});
 
 		pitch.addEventListener('dblclick',function(){
 			pitch.value=0;
 			document.querySelector('#APitchVis').textContent=pitch.value;
 			Tone.disconnect(Track, pitchShift);
-			Tone.disconnect(pitchShift, gain);
+			Tone.disconnect(pitchShift, aFilter);
 			pitchShift = new Tone.PitchShift();
 			Tone.connect(Track, pitchShift);
-			Tone.connect(pitchShift, gain);
+			Tone.connect(pitchShift, aFilter);
 			pitchShift.pitch=pitch.value;
 		});
 
@@ -186,21 +212,51 @@ function ExecuteScript()
 			DownlBut.hidden=false;
 		};
 		
+		for (i = 0; i < radEQ.length; i++) {
+			button = radEQ[i];
+			button.addEventListener('change', function(){
+				if(radEQ[0].checked){
+					aFilter.type='lowpass';
+				}
+				if(radEQ[1].checked){
+					aFilter.type='highpass';
+				}
+				if(radEQ[2].checked){
+					aFilter.type='peaking';
+				}
+			});
+		}
 		
 		audio.addEventListener('canplaythrough', function(){
 			context.resume();
 			try{
 				Track = context.createMediaElementSource(this);
 				Tone.connect(Track, pitchShift);
-				Tone.connect(pitchShift, gain);
+				Tone.connect(pitchShift, aFilter);
+				aFilter.connect(gain);
 				gain.connect(dest);
 				gain.connect(context.destination);
+
+				if(radEQ[0].checked){
+					aFilter.type='lowpass';
+				}
+				if(radEQ[1].checked){
+					aFilter.type='highpass';
+				}
+				if(radEQ[2].checked){
+					aFilter.type='peaking';
+				}
+
+				aFilter.Q.value = 5;
+
 				StartRecBut.hidden=false;
 				spectra.hidden=false;
 				oscilog.hidden=false;
 				pitch.disabled=false;
 				volume.disabled=false;
 				fullRec.hidden=false;
+				EQ.disabled=false;
+				EQgain.disabled=false;
 			}
 			catch{}
 		});

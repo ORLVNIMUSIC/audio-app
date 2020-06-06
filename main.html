@@ -26,6 +26,22 @@
 	<span id="APitchVis">0</span>
 </div>
 <div>
+	<h4>Иcпользуйте эквалайзер</h4>
+	<input id="AEQ" type="range" min="20" value="1000" max="20000" step="1" disabled="true">
+	<span id="AEQVis">1000 Hz</span>
+	<br>
+	<h4>Какой тип фильтра вы хотите использовать</h4>
+	<input type="radio" id="lpFilter" name="EQ" value="Срез высоких частот">
+    <label for="lpFilter">Срез высоких частот</label><br>
+	<input type="radio" id="hpFilter" name="EQ" value="Срез низких частот">
+    <label for="hpFilter">Срез низких частот</label><br>
+	<input type="radio" id="peakFilter" name="EQ" value="Контроль одной частоты" checked>
+		<label for="peakFilter">Контроль одной частоты</label><br>
+	<h4>Насколько усилить или ослабить выбранную частоту</h4>
+	<input type="range" id="EQgain" min="-40" value="0" max="40" step="0.1" disabled="true">
+	<span id="AEQgainVis">0</span>
+</div>
+<div>
 	<h4>Измените громкость аудиофайла</h4>
 	<input id="AVol" type="range" min="0" value="1" max="3" step="0.001" disabled="true">
 	<span id="AVolVis">1</span>
