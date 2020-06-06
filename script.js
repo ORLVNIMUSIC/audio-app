@@ -90,7 +90,8 @@ function ExecuteScript()
 		Tone.context = context;
 		var pitchShift = new Tone.PitchShift();
 		gain.gain.value = 1;
-		var Track, bufferLengthOsci, bufferLengthSpec, analyserOsci, analyserSpec, dataArrayOsci, dataArraySpec;
+		var Track, bufferLengthOsci, bufferLengthSpec, analyserOsci, analyserSpec, 
+		dataArrayOsci, dataArraySpec;
 		var now = context.currentTime;
 		analyserOsci = context.createAnalyser();
 		analyserSpec = context.createAnalyser();
@@ -99,13 +100,24 @@ function ExecuteScript()
 		var chunks = [];
 		var file;
 		
-		pitchBut.addEventListener('click', function(){
+		pitch.addEventListener('input', function(){
 			Tone.disconnect(Track, pitchShift);
 			Tone.disconnect(pitchShift, gain);
 			pitchShift = new Tone.PitchShift();
 			Tone.connect(Track, pitchShift);
 			Tone.connect(pitchShift, gain);
-			// pitchShift.windowSize = 0.07;
+			pitchShift.pitch=pitch.value;
+			document.querySelector("#APitchVis").textContent=pitch.value;
+		});
+
+		pitch.addEventListener('dblclick',function(){
+			pitch.value=0;
+			document.querySelector('#APitchVis').textContent=pitch.value;
+			Tone.disconnect(Track, pitchShift);
+			Tone.disconnect(pitchShift, gain);
+			pitchShift = new Tone.PitchShift();
+			Tone.connect(Track, pitchShift);
+			Tone.connect(pitchShift, gain);
 			pitchShift.pitch=pitch.value;
 		});
 
@@ -157,7 +169,8 @@ function ExecuteScript()
 			}
 			spectra.hidden=false;
 			oscilog.hidden=false;
-			pitchBut.hidden=false;
+			pitch.disabled=false;
+			volume.disabled=false;
 		});
 		
 		audio.addEventListener('timeupdate', function(){
