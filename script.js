@@ -67,7 +67,7 @@ function ExecuteScript()
 		var audio = document.querySelector('#APlay'),
 			volume = document.querySelector('#AVol'),
 			pitch = document.querySelector('#APitch'),
-			pitchBut = document.querySelector('#APitchBut'),
+			fullRec = document.querySelector('#AFullTrack'),
 			oscilog = document.querySelector('#AOsci'),
 			DownlBut = document.querySelector('#ADownl'),
 			StopRecBut = document.querySelector('#AStopRec'),
@@ -99,6 +99,7 @@ function ExecuteScript()
 		var analyserSpecCheck=false;
 		var chunks = [];
 		var file;
+		var recCheck=false;
 		
 		pitch.addEventListener('input', function(){
 			Tone.disconnect(Track, pitchShift);
@@ -126,6 +127,14 @@ function ExecuteScript()
 		});
 		
 		StopRecBut.addEventListener('click', function(){
+			if (recCheck){
+				audio.pause();
+				fullRec.disabled=false;
+				fullRec.value="Записать трек целиком";
+				audio.controls=true;
+				recCheck=false;
+				files.disabled=false;
+			}
 			mediaRecorder.stop();
 			StopRecBut.hidden=true;
 			StartRecBut.hidden=false;
@@ -135,6 +144,31 @@ function ExecuteScript()
 			mediaRecorder.start();
 			StopRecBut.hidden=false;
 			StartRecBut.hidden=true;
+		});
+
+		fullRec.addEventListener('click', function(){
+			recCheck=true;
+			audio.currentTime = 0;
+			audio.play();
+			fullRec.value="Идет записть трека целиком";
+			fullRec.disabled=true;
+			mediaRecorder.start();
+			StopRecBut.hidden=false;
+			StartRecBut.hidden=true;
+			audio.controls=false;
+			files.disabled=true;
+		});
+		audio.addEventListener('ended', function(){
+			if(recCheck){
+				fullRec.disabled=false;
+				fullRec.value="Записать трек целиком";
+				mediaRecorder.stop();
+				StopRecBut.hidden=true;
+				StartRecBut.hidden=false;
+				audio.controls=true;
+				recCheck=false;
+				files.disabled=false;
+			}
 		});
 		
 		DownlBut.addEventListener('click', function(){
@@ -162,15 +196,13 @@ function ExecuteScript()
 				gain.connect(dest);
 				gain.connect(context.destination);
 				StartRecBut.hidden=false;
+				spectra.hidden=false;
+				oscilog.hidden=false;
+				pitch.disabled=false;
+				volume.disabled=false;
+				fullRec.hidden=false;
 			}
-			catch (error)
-			{
-				
-			}
-			spectra.hidden=false;
-			oscilog.hidden=false;
-			pitch.disabled=false;
-			volume.disabled=false;
+			catch{}
 		});
 		
 		audio.addEventListener('timeupdate', function(){
