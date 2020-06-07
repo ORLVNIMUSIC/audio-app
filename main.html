@@ -38,8 +38,13 @@
 	<input type="radio" id="peakFilter" name="EQ" value="Контроль одной частоты" checked>
 		<label for="peakFilter">Контроль одной частоты</label><br>
 	<h4>Насколько усилить или ослабить выбранную частоту</h4>
-	<input type="range" id="EQgain" min="-40" value="0" max="40" step="0.1" disabled="true">
-	<span id="AEQgainVis">0</span>
+	<input type="range" id="EQgain" min="-10" value="0" max="10" step="0.1" disabled="true">
+	<span id="AEQgainVis">0 db</span>
+</div>
+<div>
+	<h4>Используйте компрессор</h4>
+	<input id="ACompTres" type="range" min="-100" value="0" max="0" step="0.1" disabled="true">
+	<span id="ACompTresVis">0 db</span>
 </div>
 <div>
 	<h4>Измените громкость аудиофайла</h4>
@@ -47,17 +52,17 @@
 	<span id="AVolVis">1</span>
 </div>
 <div>
-	<h4>Посмотреть волну трека</h4>
-	<input id="AOsci" type="button" hidden="true" value="Посмотреть">
-	<br>
-	<canvas id="canvasOsci" width="800" height="300">
-	</canvas>
-</div>
-<div>
 	<h4>Посмотреть спектрограмму трека</h4>
 	<input id="ASpec" type="button" hidden="true" value="Посмотреть">
 	<br>
 	<canvas id="canvasSpec" width="800" height="275" logarithmic="true">
+	</canvas>
+</div>
+<div>
+	<h4>Посмотреть волну трека</h4>
+	<input id="AOsci" type="button" hidden="true" value="Посмотреть">
+	<br>
+	<canvas id="canvasOsci" width="800" height="300">
 	</canvas>
 </div>
 <div>

@@ -69,6 +69,7 @@ function ExecuteScript()
 			pitch = document.querySelector('#APitch'),
 			EQ = document.querySelector('#AEQ'),
 			EQgain = document.querySelector('#EQgain'),
+			CompTres = document.querySelector('#ACompTres'),
 			fullRec = document.querySelector('#AFullTrack'),
 			oscilog = document.querySelector('#AOsci'),
 			DownlBut = document.querySelector('#ADownl'),
@@ -83,14 +84,15 @@ function ExecuteScript()
 			
 		
 		var context = new (window.AudioContext || window.webkitAudioContext);
+		Tone.context = context;
 		var aFilter = context.createBiquadFilter();
 		var dest = context.createMediaStreamDestination();
+		var compressor = context.createDynamicsCompressor();
+		var gain = context.createGain();
+		var pitchShift = new Tone.PitchShift();
 		
 		var mediaRecorder = new MediaRecorder(dest.stream);
 		
-		var gain = context.createGain();
-		Tone.context = context;
-		var pitchShift = new Tone.PitchShift();
 		gain.gain.value = 1;
 		var Track, bufferLengthOsci, bufferLengthSpec, analyserOsci, analyserSpec, 
 		dataArrayOsci, dataArraySpec;
@@ -115,6 +117,10 @@ function ExecuteScript()
 			document.querySelector("#APitchVis").textContent=pitch.value;
 		});
 
+		CompTres.addEventListener('input', function(){
+			//-----------------------------------------------------
+		});
+
 		EQ.addEventListener('input', function(){
 			aFilter.frequency.value=EQ.value;
 			document.querySelector('#AEQVis').textContent=EQ.value + ' Hz';
@@ -124,6 +130,17 @@ function ExecuteScript()
 			EQ.value=1000;
 			aFilter.frequency.value=EQ.value;
 			document.querySelector('#AEQVis').textContent=EQ.value + ' Hz';
+		});
+
+		CompTres.addEventListener('input', function(){
+			compressor.threshold.value=CompTres.value;
+			document.querySelector('#ACompTresVis').textContent=CompTres.value + ' db';
+		});
+		
+		CompTres.addEventListener('dblclick',function(){
+			CompTres.value=0;
+			compressor.threshold.value=CompTres.value;
+			document.querySelector('#ACompTresVis').textContent=CompTres.value + ' db';
 		});
 
 		EQgain.addEventListener('input', function(){
@@ -149,7 +166,7 @@ function ExecuteScript()
 		});
 
 		files.addEventListener('change', function(){
-			audio.src = URL.createObjectURL(this.files[0]); 
+			audio.src = URL.createObjectURL(this.files[0]);
 		});
 		
 		StopRecBut.addEventListener('click', function(){
@@ -233,7 +250,8 @@ function ExecuteScript()
 				Track = context.createMediaElementSource(this);
 				Tone.connect(Track, pitchShift);
 				Tone.connect(pitchShift, aFilter);
-				aFilter.connect(gain);
+				aFilter.connect(compressor);
+				compressor.connect(gain);
 				gain.connect(dest);
 				gain.connect(context.destination);
 
@@ -247,6 +265,8 @@ function ExecuteScript()
 					aFilter.type='peaking';
 				}
 
+				compressor.threshold.value = 0;
+
 				aFilter.Q.value = 5;
 
 				StartRecBut.hidden=false;
@@ -257,6 +277,7 @@ function ExecuteScript()
 				fullRec.hidden=false;
 				EQ.disabled=false;
 				EQgain.disabled=false;
+				CompTres.disabled=false;
 			}
 			catch{}
 		});
