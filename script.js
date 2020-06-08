@@ -66,6 +66,7 @@ function ExecuteScript()
 		
 		var audio = document.querySelector('#APlay'),
 			volume = document.querySelector('#AVol'),
+			panner = document.querySelector('#APan'),
 			pitch = document.querySelector('#APitch'),
 			EQ = document.querySelector('#AEQ'),
 			delay = document.querySelector('#ADelay'),
@@ -95,6 +96,7 @@ function ExecuteScript()
 		var pitchShift = new Tone.PitchShift();
 		var delayNode = context.createDelay(4);
 		var delayGain = context.createGain();
+		var panNode = context.createStereoPanner();
 		
 		var mediaRecorder = new MediaRecorder(dest.stream);
 		
@@ -112,6 +114,17 @@ function ExecuteScript()
 		var button;
 		var radEQ=document.getElementsByName('EQ');
 		
+		panner.addEventListener('input',function(){
+			document.querySelector('#APanVis').textContent=panner.value;
+			panNode.pan.value=panner.value;
+		});
+		
+		panner.addEventListener('dblclick',function(){
+			panner.value=0;
+			document.querySelector('#APanVis').textContent=panner.value;
+			panNode.pan.value=panner.value;
+		});
+
 		pitch.addEventListener('input', function(){
 			Tone.disconnect(Track, pitchShift);
 			Tone.disconnect(pitchShift, aFilter);
@@ -140,7 +153,7 @@ function ExecuteScript()
 				delayGainRange.disabled=false;
 				compressor.connect(delayNode);
 				delayNode.connect(delayGain);
-				delayGain.connect(gain);
+				delayGain.connect(panNode);
 				delayCheck=true;
 			}
 			else{
@@ -149,7 +162,7 @@ function ExecuteScript()
 				delayGainRange.disabled=true;
 				compressor.disconnect(delayNode);
 				delayNode.disconnect(delayGain);
-				delayGain.disconnect(gain);
+				delayGain.disconnect(panNode);
 				delayCheck=false;
 			}
 		});
@@ -311,7 +324,8 @@ function ExecuteScript()
 				Tone.connect(Track, pitchShift);
 				Tone.connect(pitchShift, aFilter);
 				aFilter.connect(compressor);
-				compressor.connect(gain);
+				compressor.connect(panNode);
+				panNode.connect(gain);
 				gain.connect(dest);
 				gain.connect(context.destination);
 
@@ -345,6 +359,7 @@ function ExecuteScript()
 				EQgain.disabled=false;
 				CompTres.disabled=false;
 				delayBut.disabled=false;
+				panner.disabled=false;
 			}
 			catch{}
 		});
