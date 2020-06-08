@@ -68,6 +68,9 @@ function ExecuteScript()
 			volume = document.querySelector('#AVol'),
 			pitch = document.querySelector('#APitch'),
 			EQ = document.querySelector('#AEQ'),
+			delay = document.querySelector('#ADelay'),
+			delayGainRange = document.querySelector('#ADelayGain'),
+			delayBut = document.querySelector('#ADelayBut'),
 			EQgain = document.querySelector('#EQgain'),
 			CompTres = document.querySelector('#ACompTres'),
 			fullRec = document.querySelector('#AFullTrack'),
@@ -90,10 +93,11 @@ function ExecuteScript()
 		var compressor = context.createDynamicsCompressor();
 		var gain = context.createGain();
 		var pitchShift = new Tone.PitchShift();
+		var delayNode = context.createDelay(4);
+		var delayGain = context.createGain();
 		
 		var mediaRecorder = new MediaRecorder(dest.stream);
 		
-		gain.gain.value = 1;
 		var Track, bufferLengthOsci, bufferLengthSpec, analyserOsci, analyserSpec, 
 		dataArrayOsci, dataArraySpec;
 		var now = context.currentTime;
@@ -101,6 +105,7 @@ function ExecuteScript()
 		analyserSpec = context.createAnalyser();
 		var analyserOsciCheck=false;
 		var analyserSpecCheck=false;
+		var delayCheck=false;
 		var recCheck=false;
 		var chunks = [];
 		var file;
@@ -117,8 +122,47 @@ function ExecuteScript()
 			document.querySelector("#APitchVis").textContent=pitch.value;
 		});
 
-		CompTres.addEventListener('input', function(){
-			//-----------------------------------------------------
+		delay.addEventListener('input', function(){
+			delayNode.delayTime.value=delay.value;
+			document.querySelector('#ADelayVis').textContent=delay.value + ' s';
+		});
+		
+		delay.addEventListener('dblclick',function(){
+			delay.value=1;
+			delayNode.delayTime.value=delay.value;
+			document.querySelector('#ADelayVis').textContent=delay.value + ' s';
+		});
+
+		delayBut.addEventListener('click', function(){
+			if (!delayCheck){
+				delayBut.value='Выключить дилэй';
+				delay.disabled=false;
+				delayGainRange.disabled=false;
+				compressor.connect(delayNode);
+				delayNode.connect(delayGain);
+				delayGain.connect(gain);
+				delayCheck=true;
+			}
+			else{
+				delayBut.value='Включить дилэй';
+				delay.disabled=true;
+				delayGainRange.disabled=true;
+				compressor.disconnect(delayNode);
+				delayNode.disconnect(delayGain);
+				delayGain.disconnect(gain);
+				delayCheck=false;
+			}
+		});
+
+		delayGainRange.addEventListener('input', function(){
+			delayGain.gain.value=delayGainRange.value;
+			document.querySelector('#ADelayGainVis').textContent=delayGainRange.value;
+		});
+		
+		delayGainRange.addEventListener('dblclick',function(){
+			delayGainRange.value=0;
+			delayGain.gain.value=delayGainRange.value;
+			document.querySelector('#ADelayGainVis').textContent=delayGainRange.value;
 		});
 
 		EQ.addEventListener('input', function(){
@@ -201,7 +245,23 @@ function ExecuteScript()
 			audio.controls=false;
 			files.disabled=true;
 		});
+
+		audio.addEventListener('pause', function(){
+			if (!recCheck){
+				if (delayCheck){
+					delayGain.gain.value=0;
+					delayGainRange.value=0;
+					document.querySelector('#ADelayGainVis').textContent=delayGainRange.value;
+				}
+			}
+		});
+
 		audio.addEventListener('ended', function(){
+			if (delayCheck){
+				delayGain.gain.value=0;
+				delayGainRange.value=0;
+				document.querySelector('#ADelayGainVis').textContent=delayGainRange.value;
+			}
 			if(recCheck){
 				fullRec.disabled=false;
 				fullRec.value="Записать трек целиком";
@@ -265,6 +325,12 @@ function ExecuteScript()
 					aFilter.type='peaking';
 				}
 
+				delayNode.delayTime.value=1;
+
+				delayGain.gain.value=0;
+				
+				gain.gain.value = 1;
+
 				compressor.threshold.value = 0;
 
 				aFilter.Q.value = 5;
@@ -278,6 +344,7 @@ function ExecuteScript()
 				EQ.disabled=false;
 				EQgain.disabled=false;
 				CompTres.disabled=false;
+				delayBut.disabled=false;
 			}
 			catch{}
 		});
