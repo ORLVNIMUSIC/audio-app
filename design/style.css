@@ -1,27 +1,42 @@
 body {
-  width: 100%;
-}
-
-.conteiner {
   padding: 0;
   margin: 0;
   border: 0;
+  height: 90vh;
+}
+
+.conteiner {
   text-align: center;
+  display: block;
+  height: 100%;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  padding: 0;
+  margin: 0;
 }
 
 #left_block {
-  background-color: red;
+  background-color: white;
   display: inline-block;
   width: 49%;
+  min-width: 604px;
+  vertical-align: top;
 }
 
 #right_block {
-  background-color: grey;
+  background-color: white;
   display: inline-block;
   width: 49%;
+  min-width: 604px;
+  vertical-align: top;
+  margin-top: 0;
+  height: 100%;
 }
 
-canvas {
-  border: 3px solid black;
+#right_block canvas {
+  display: block;
+  border: 2px solid #c83232;
+  margin: auto;
 }
 /*# sourceMappingURL=style.css.map */

@@ -45,8 +45,6 @@ function ExecuteScript()
 			var canvasWidth = parseInt(window.getComputedStyle(canvasSpec).width);
 			var canvasHeight = parseInt(window.getComputedStyle(canvasSpec).height);
 			canvasSpecCtx.fillRect(0, 0, canvasWidth, canvasHeight);	
-			console.log(canvasWidth);
-			console.log(canvasHeight);
 			var barWidth = (canvasWidth / bufferLengthSpec)*3;	// тут вот надо сделать логарифм (было: var barWidth = (canvasSpec.width / bufferLengthSpec)*2.5;
 			var barHeight;
 			var x=0;
@@ -57,7 +55,7 @@ function ExecuteScript()
 			
 			for (var i=0; i<bufferLengthSpec; i++)
 			{
-				barHeight = dataArraySpec[i];
+				barHeight = dataArraySpec[i]*1.7;
 				canvasSpecCtx.fillStyle = 'rgb(' + (barHeight+100) + ',50,50)';
 				canvasSpecCtx.fillRect(x,canvasHeight-barHeight/2,barWidth,barHeight);
 				canvasSpecCtx.lineTo(x,canvasHeight-barHeight/2);

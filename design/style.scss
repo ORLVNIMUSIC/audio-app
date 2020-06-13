@@ -1,36 +1,45 @@
 body{
-    width: 100%;
-}
-.conteiner{
     padding: 0;
     margin: 0;
     border: 0;
-    text-align: center;
+    height: 90vh;
 }
+.conteiner{
+    text-align: center;
+    display: block;
+    height: 100%;
+}
+
+h1, h2, h3, h4, h5, h6{
+    padding: 0;
+    margin: 0;
+}
+
+$bw: 49%;
 
 #left_block{
-    background-color: red;
+    background-color: rgb(255, 255, 255);
     display: inline-block;
-    // max-width: 500px;
-    width: 49%;
+    width: $bw;
+    min-width: 604px;
+    vertical-align: top;
 }
 #right_block{
-    background-color: grey;
+    background-color: rgb(255, 255, 255);
     display: inline-block;
-    // max-width: 500px;
-    width: 49%;
-}
+    width: $bw;
+    min-width: 604px;
+    vertical-align: top;
+    margin-top: 0;
+    height: 100%;
+    
+    //визуализаторы
 
-//визуализаторы
-
-canvas{
-    border: 3px solid black;
-}
-#canvasSpec{
-    // height: 300px;
-    // width: 70%;
-}
-#canvasOsci{
-    // height: 200px;
-    // width: 70%;
+    canvas{
+        display: block;
+        // width: 90%;
+        border: 2px solid rgb(200, 50, 50);
+        margin: auto;
+        // object-fit: fill;
+    }
 }
