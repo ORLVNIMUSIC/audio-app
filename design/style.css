@@ -1,0 +1,33 @@
+body {
+  width: 100%;
+}
+
+.conteiner {
+  padding: 0;
+  margin: 0;
+  border: 0;
+  text-align: center;
+}
+
+#left_block {
+  background-color: red;
+  display: inline-block;
+  width: 49%;
+}
+
+#right_block {
+  background-color: green;
+  display: inline-block;
+  width: 49%;
+}
+
+#canvasSpec {
+  height: 250px;
+  width: 100%;
+}
+
+#canvasOsci {
+  height: 250px;
+  width: 100%;
+}
+/*# sourceMappingURL=style.css.map */

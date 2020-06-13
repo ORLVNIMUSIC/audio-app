@@ -42,21 +42,25 @@ function ExecuteScript()
 			drawVisual = requestAnimationFrame(drawSpec);
 			analyserSpec.getByteFrequencyData(dataArraySpec);
 			canvasSpecCtx.fillStyle = 'rgb(255, 255, 255)';
-			canvasSpecCtx.fillRect(0, 0, canvasSpec.width, canvasSpec.height);	
-			var barWidth = (canvasSpec.width / bufferLengthSpec)*3;	// тут вот надо сделать логарифм (было: var barWidth = (canvasSpec.width / bufferLengthSpec)*2.5;
+			var canvasWidth = parseInt(window.getComputedStyle(canvasSpec).width);
+			var canvasHeight = parseInt(window.getComputedStyle(canvasSpec).height);
+			canvasSpecCtx.fillRect(0, 0, canvasWidth, canvasHeight);	
+			console.log(canvasWidth);
+			console.log(canvasHeight);
+			var barWidth = (canvasWidth / bufferLengthSpec)*3;	// тут вот надо сделать логарифм (было: var barWidth = (canvasSpec.width / bufferLengthSpec)*2.5;
 			var barHeight;
 			var x=0;
-			var scale = Math.log(bufferLengthSpec - 1) / canvasSpec.width;
+			var scale = Math.log(bufferLengthSpec - 1) / canvasWidth;
 			
 			canvasSpecCtx.beginPath();
-			canvasSpecCtx.moveTo(x+barWidth,canvasSpec.height-dataArraySpec[0]);
+			canvasSpecCtx.moveTo(x+barWidth,canvasHeight-dataArraySpec[0]);
 			
 			for (var i=0; i<bufferLengthSpec; i++)
 			{
 				barHeight = dataArraySpec[i]*2;
 				canvasSpecCtx.fillStyle = 'rgb(' + (barHeight+100) + ',50,50)';
-				canvasSpecCtx.fillRect(x,canvasSpec.height-barHeight/2,barWidth,barHeight);
-				canvasSpecCtx.lineTo(x,canvasSpec.height-barHeight/2);
+				canvasSpecCtx.fillRect(x,canvasHeight-barHeight/2,barWidth,barHeight);
+				canvasSpecCtx.lineTo(x,canvasHeight-barHeight/2);
 				// canvasSpecCtx.moveTo(x+barWidth,canvasSpec.height-dataArraySpec[0]);
 				// x += barWidth + 1;
 				x = Math.log(i) / scale;
