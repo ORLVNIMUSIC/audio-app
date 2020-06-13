@@ -50,14 +50,14 @@ function ExecuteScript()
 			var barWidth = (canvasWidth / bufferLengthSpec)*3;	// тут вот надо сделать логарифм (было: var barWidth = (canvasSpec.width / bufferLengthSpec)*2.5;
 			var barHeight;
 			var x=0;
-			var scale = Math.log(bufferLengthSpec - 1) / canvasWidth;
+			var scale = Math.log(bufferLengthSpec-1) / canvasWidth;
 			
 			canvasSpecCtx.beginPath();
 			canvasSpecCtx.moveTo(x+barWidth,canvasHeight-dataArraySpec[0]);
 			
 			for (var i=0; i<bufferLengthSpec; i++)
 			{
-				barHeight = dataArraySpec[i]*2;
+				barHeight = dataArraySpec[i];
 				canvasSpecCtx.fillStyle = 'rgb(' + (barHeight+100) + ',50,50)';
 				canvasSpecCtx.fillRect(x,canvasHeight-barHeight/2,barWidth,barHeight);
 				canvasSpecCtx.lineTo(x,canvasHeight-barHeight/2);

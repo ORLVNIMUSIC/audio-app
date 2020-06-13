@@ -16,18 +16,12 @@ body {
 }
 
 #right_block {
-  background-color: green;
+  background-color: grey;
   display: inline-block;
   width: 49%;
 }
 
-#canvasSpec {
-  height: 250px;
-  width: 100%;
-}
-
-#canvasOsci {
-  height: 250px;
-  width: 100%;
+canvas {
+  border: 3px solid black;
 }
 /*# sourceMappingURL=style.css.map */

@@ -15,18 +15,22 @@ body{
     width: 49%;
 }
 #right_block{
-    background-color: green;
+    background-color: grey;
     display: inline-block;
     // max-width: 500px;
     width: 49%;
 }
 
 //визуализаторы
+
+canvas{
+    border: 3px solid black;
+}
 #canvasSpec{
-    height: 250px;
-    width: 100%;
+    // height: 300px;
+    // width: 70%;
 }
 #canvasOsci{
-    height: 250px;
-    width: 100%;
+    // height: 200px;
+    // width: 70%;
 }
