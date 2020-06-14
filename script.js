@@ -14,10 +14,10 @@ function ExecuteScript()
 		function drawOsci() {
 			drawVisual = requestAnimationFrame(drawOsci);
 			analyserOsci.getByteTimeDomainData(dataArrayOsci);
-			canvasOsciCtx.fillStyle = 'rgb(255, 255, 255)';
+			canvasOsciCtx.fillStyle = 'rgb(100, 100, 100)';
 			canvasOsciCtx.fillRect(0, 0, canvasOsci.width, canvasOsci.height);	
 			canvasOsciCtx.lineWidth = 2;
-			canvasOsciCtx.strokeStyle = 'rgb(200, 50, 50)';
+			canvasOsciCtx.strokeStyle = 'rgb(255, 255, 255)';
 
 			canvasOsciCtx.beginPath();
 			var sliceWidth = canvasOsci.width * 1.0 / bufferLengthOsci;
@@ -41,7 +41,7 @@ function ExecuteScript()
 		function drawSpec() {
 			drawVisual = requestAnimationFrame(drawSpec);
 			analyserSpec.getByteFrequencyData(dataArraySpec);
-			canvasSpecCtx.fillStyle = 'rgb(255, 255, 255)';
+			canvasSpecCtx.fillStyle = 'rgb(100, 100, 100)';
 			var canvasWidth = parseInt(window.getComputedStyle(canvasSpec).width);
 			var canvasHeight = parseInt(window.getComputedStyle(canvasSpec).height);
 			canvasSpecCtx.fillRect(0, 0, canvasWidth, canvasHeight);	
@@ -56,7 +56,7 @@ function ExecuteScript()
 			for (var i=0; i<bufferLengthSpec; i++)
 			{
 				barHeight = dataArraySpec[i]*1.7;
-				canvasSpecCtx.fillStyle = 'rgb(' + (barHeight+100) + ',50,50)';
+				canvasSpecCtx.fillStyle = 'rgb(' + (barHeight+100) + ',255,255)';
 				canvasSpecCtx.fillRect(x,canvasHeight-barHeight/2,barWidth,barHeight);
 				canvasSpecCtx.lineTo(x,canvasHeight-barHeight/2);
 				// canvasSpecCtx.moveTo(x+barWidth,canvasSpec.height-dataArraySpec[0]);
@@ -252,7 +252,7 @@ function ExecuteScript()
 			recCheck=true;
 			audio.currentTime = 0;
 			audio.play();
-			fullRec.value="Идет записть трека целиком";
+			fullRec.value="Идет запись трека целиком";
 			fullRec.disabled=true;
 			mediaRecorder.start();
 			StopRecBut.hidden=false;

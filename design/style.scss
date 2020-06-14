@@ -15,10 +15,21 @@ body{
 
 h1, h2, h3, h4, h5, h6{
     padding: 0;
-    margin: 0;
+    margin: 1px 0;
 }
 
 $bw: 49%;
+
+input[type=button]{
+    transition: 0.2s;
+}
+
+input[type=button]:hover{
+    background-color: rgb(100, 100, 100);
+}
+input[type=button]:disabled{
+    color: white;
+}
 
 #left_block{
     // background-color: rgb(255, 255, 255);
@@ -28,12 +39,15 @@ $bw: 49%;
     vertical-align: top;
     #converter{
         color: white;
-        transition: 0.1s;
+        transition: 0.2s;
         text-decoration: none;
         text-transform: uppercase;
         &:hover{
-            color: red;
+            color: rgb(100, 100, 100);
         }
+    }
+    #record{
+        border: 2px solid rgb(255, 255, 255);
     }
 }
 #right_block{
@@ -43,14 +57,17 @@ $bw: 49%;
     min-width: 604px;
     vertical-align: top;
     margin-top: 0;
-    height: 100%;
+
+    h4{
+        margin: 10px 0;
+    }
     
     //визуализаторы
 
     canvas{
         display: block;
         // width: 90%;
-        border: 2px solid rgb(200, 50, 50);
+        border: 2px solid rgb(255, 255, 255);
         margin: auto;
         // object-fit: fill;
     }

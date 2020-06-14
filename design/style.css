@@ -16,7 +16,20 @@ body {
 
 h1, h2, h3, h4, h5, h6 {
   padding: 0;
-  margin: 0;
+  margin: 1px 0;
+}
+
+input[type=button] {
+  -webkit-transition: 0.2s;
+  transition: 0.2s;
+}
+
+input[type=button]:hover {
+  background-color: #646464;
+}
+
+input[type=button]:disabled {
+  color: white;
 }
 
 #left_block {
@@ -28,14 +41,18 @@ h1, h2, h3, h4, h5, h6 {
 
 #left_block #converter {
   color: white;
-  -webkit-transition: 0.1s;
-  transition: 0.1s;
+  -webkit-transition: 0.2s;
+  transition: 0.2s;
   text-decoration: none;
   text-transform: uppercase;
 }
 
 #left_block #converter:hover {
-  color: red;
+  color: #646464;
+}
+
+#left_block #record {
+  border: 2px solid white;
 }
 
 #right_block {
@@ -44,12 +61,15 @@ h1, h2, h3, h4, h5, h6 {
   min-width: 604px;
   vertical-align: top;
   margin-top: 0;
-  height: 100%;
+}
+
+#right_block h4 {
+  margin: 10px 0;
 }
 
 #right_block canvas {
   display: block;
-  border: 2px solid #c83232;
+  border: 2px solid white;
   margin: auto;
 }
 /*# sourceMappingURL=style.css.map */

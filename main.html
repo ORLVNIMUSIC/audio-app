@@ -7,6 +7,7 @@
 <script src="script.js"></script>
 <script src="https://unpkg.com/tone@13.8.25/build/Tone.js"></script>
 <link rel="stylesheet" href="design/style.css">
+<link rel="shortcut icon" href="#">
 </head>
 <body onload="ExecuteScript()">
 		<h2 align="center">Это приложение позволяет обработать любую песню</h2>
@@ -65,14 +66,13 @@
 				<input id="AVol" type="range" min="0" value="1" max="3" step="0.01" disabled="true">
 				<span id="AVolVis">1</span>
 			</div>
-			<div>
+			<div id="record">
 				<h4>Сделать запись</h4>
 				<input id="AStartRec" type="button" hidden="true" value="Начните запись">
 				<input id="AStopRec" type="button" hidden="true" value="Завершить запись">
-				<hr>
 				<input id="AFullTrack" type="button" hidden="true" value="Записать трек целиком">
-				<hr>
 				<input id="ADownl" type="button" hidden="true" value="Скачать запись">
+				<hr>
 				<audio id="ANew" controls>Скачать трек</audio><br>
 				<a id="converter" target = "_blank" href = "https://online-audio-converter.com/ru/">Чтобы переконвертировать файл в нужный формат кликните сюда</a>
 			</div>
@@ -82,14 +82,12 @@
 			<div>
 				<h4>Посмотреть спектрограмму трека</h4>
 				<input id="ASpec" type="button" hidden="true" value="Посмотреть">
-				<br>
 				<canvas id="canvasSpec" width="600" height="250">
 				</canvas>
 			</div>
 			<div>
 				<h4>Посмотреть волну трека</h4>
 				<input id="AOsci" type="button" hidden="true" value="Посмотреть">
-				<br>
 				<canvas id="canvasOsci" width="600" height="250">
 				</canvas>
 			</div>
