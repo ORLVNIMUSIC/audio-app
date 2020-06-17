@@ -85,10 +85,11 @@ function ExecuteScript()
 			canvasOsci = document.querySelector('#canvasOsci'),
 			canvasSpec = document.querySelector('#canvasSpec'),
 			files = document.querySelector('#AFile');
+		var radEQ=document.getElementsByName('EQ');
+
 		var canvasOsciCtx = canvasOsci.getContext("2d");
 		var canvasSpecCtx = canvasSpec.getContext("2d");
 			
-		
 		var context = new (window.AudioContext || window.webkitAudioContext);
 		Tone.context = context;
 		var aFilter = context.createBiquadFilter();
@@ -104,17 +105,17 @@ function ExecuteScript()
 		
 		var Track, bufferLengthOsci, bufferLengthSpec, analyserOsci, analyserSpec, 
 		dataArrayOsci, dataArraySpec;
-		var now = context.currentTime;
 		analyserOsci = context.createAnalyser();
 		analyserSpec = context.createAnalyser();
+
 		var analyserOsciCheck=false;
 		var analyserSpecCheck=false;
 		var delayCheck=false;
 		var recCheck=false;
+
 		var chunks = [];
 		var file;
 		var button;
-		var radEQ=document.getElementsByName('EQ');
 		
 		panner.addEventListener('input',function(){
 			document.querySelector('#APanVis').textContent=panner.value;
@@ -135,6 +136,17 @@ function ExecuteScript()
 			Tone.connect(pitchShift, aFilter);
 			pitchShift.pitch=pitch.value;
 			document.querySelector("#APitchVis").textContent=pitch.value;
+		});
+
+		pitch.addEventListener('dblclick',function(){
+			pitch.value=0;
+			document.querySelector('#APitchVis').textContent=pitch.value;
+			Tone.disconnect(Track, pitchShift);
+			Tone.disconnect(pitchShift, aFilter);
+			pitchShift = new Tone.PitchShift();
+			Tone.connect(Track, pitchShift);
+			Tone.connect(pitchShift, aFilter);
+			pitchShift.pitch=pitch.value;
 		});
 
 		delay.addEventListener('input', function(){
@@ -211,21 +223,6 @@ function ExecuteScript()
 			EQgain.value=0;
 			aFilter.gain.value=EQgain.value;
 			document.querySelector('#AEQgainVis').textContent=EQgain.value + ' db';
-		});
-
-		pitch.addEventListener('dblclick',function(){
-			pitch.value=0;
-			document.querySelector('#APitchVis').textContent=pitch.value;
-			Tone.disconnect(Track, pitchShift);
-			Tone.disconnect(pitchShift, aFilter);
-			pitchShift = new Tone.PitchShift();
-			Tone.connect(Track, pitchShift);
-			Tone.connect(pitchShift, aFilter);
-			pitchShift.pitch=pitch.value;
-		});
-
-		files.addEventListener('change', function(){
-			audio.src = URL.createObjectURL(this.files[0]);
 		});
 		
 		StopRecBut.addEventListener('click', function(){
@@ -306,6 +303,7 @@ function ExecuteScript()
 		
 		for (i = 0; i < radEQ.length; i++) {
 			button = radEQ[i];
+
 			button.addEventListener('change', function(){
 				if(radEQ[0].checked){
 					aFilter.type='lowpass';
@@ -319,6 +317,27 @@ function ExecuteScript()
 			});
 		}
 		
+		audio.addEventListener('timeupdate', function(){
+			if(!isNaN(audio.currentTime)) {
+				audio.playbackRate = 1;
+			}
+		});
+		
+		volume.addEventListener('input',function(){
+			document.querySelector('#AVolVis').textContent=volume.value;
+			gain.gain.value=volume.value;
+		});
+		
+		volume.addEventListener('dblclick',function(){
+			volume.value=1;
+			document.querySelector('#AVolVis').textContent=volume.value;
+			gain.gain.value=volume.value;
+		});
+
+		files.addEventListener('change', function(){
+			audio.src = URL.createObjectURL(this.files[0]);
+		});
+
 		audio.addEventListener('canplaythrough', function(){
 			context.resume();
 			try{
@@ -366,23 +385,6 @@ function ExecuteScript()
 			catch{}
 		});
 		
-		audio.addEventListener('timeupdate', function(){
-			if(!isNaN(audio.currentTime)) {
-				audio.playbackRate = 1;
-			}
-		});
-		
-		volume.addEventListener('input',function(){
-			document.querySelector('#AVolVis').textContent=volume.value;
-			gain.gain.value=volume.value;
-		});
-		
-		volume.addEventListener('dblclick',function(){
-			volume.value=1;
-			document.querySelector('#AVolVis').textContent=volume.value;
-			gain.gain.value=volume.value;
-		});
-		
 		oscilog.addEventListener('click',function(){
 			if (!analyserOsciCheck)
 			{
@@ -427,6 +429,7 @@ function ExecuteScript()
 				spectra.value="Посмотреть";
 			}
 		});
+
 		function ForceDownload(href, downlname) {
 			var anchor = document.createElement('a');
 			anchor.href = href;
