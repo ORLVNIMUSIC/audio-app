@@ -14,10 +14,10 @@ function ExecuteScript()
 		function drawOsci() {
 			drawVisual = requestAnimationFrame(drawOsci);
 			analyserOsci.getByteTimeDomainData(dataArrayOsci);
-			canvasOsciCtx.fillStyle = 'rgb(255, 255, 255)';
+			canvasOsciCtx.fillStyle = 'rgb(100, 100, 100)';
 			canvasOsciCtx.fillRect(0, 0, canvasOsci.width, canvasOsci.height);	
 			canvasOsciCtx.lineWidth = 2;
-			canvasOsciCtx.strokeStyle = 'rgb(200, 50, 50)';
+			canvasOsciCtx.strokeStyle = 'rgb(255, 255, 255)';
 
 			canvasOsciCtx.beginPath();
 			var sliceWidth = canvasOsci.width * 1.0 / bufferLengthOsci;
@@ -41,22 +41,24 @@ function ExecuteScript()
 		function drawSpec() {
 			drawVisual = requestAnimationFrame(drawSpec);
 			analyserSpec.getByteFrequencyData(dataArraySpec);
-			canvasSpecCtx.fillStyle = 'rgb(255, 255, 255)';
-			canvasSpecCtx.fillRect(0, 0, canvasSpec.width, canvasSpec.height);	
-			var barWidth = (canvasSpec.width / bufferLengthSpec)*3;	// тут вот надо сделать логарифм (было: var barWidth = (canvasSpec.width / bufferLengthSpec)*2.5;
+			canvasSpecCtx.fillStyle = 'rgb(100, 100, 100)';
+			var canvasWidth = parseInt(window.getComputedStyle(canvasSpec).width);
+			var canvasHeight = parseInt(window.getComputedStyle(canvasSpec).height);
+			canvasSpecCtx.fillRect(0, 0, canvasWidth, canvasHeight);	
+			var barWidth = (canvasWidth / bufferLengthSpec)*3;	// тут вот надо сделать логарифм (было: var barWidth = (canvasSpec.width / bufferLengthSpec)*2.5;
 			var barHeight;
 			var x=0;
-			var scale = Math.log(bufferLengthSpec - 1) / canvasSpec.width;
+			var scale = Math.log(bufferLengthSpec-1) / canvasWidth;
 			
 			canvasSpecCtx.beginPath();
-			canvasSpecCtx.moveTo(x+barWidth,canvasSpec.height-dataArraySpec[0]);
+			canvasSpecCtx.moveTo(x+barWidth,canvasHeight-dataArraySpec[0]);
 			
 			for (var i=0; i<bufferLengthSpec; i++)
 			{
-				barHeight = dataArraySpec[i]*2;
-				canvasSpecCtx.fillStyle = 'rgb(' + (barHeight+100) + ',50,50)';
-				canvasSpecCtx.fillRect(x,canvasSpec.height-barHeight/2,barWidth,barHeight);
-				canvasSpecCtx.lineTo(x,canvasSpec.height-barHeight/2);
+				barHeight = dataArraySpec[i]*1.7;
+				canvasSpecCtx.fillStyle = 'rgb(' + (barHeight+100) + ',255,255)';
+				canvasSpecCtx.fillRect(x,canvasHeight-barHeight/2,barWidth,barHeight);
+				canvasSpecCtx.lineTo(x,canvasHeight-barHeight/2);
 				// canvasSpecCtx.moveTo(x+barWidth,canvasSpec.height-dataArraySpec[0]);
 				// x += barWidth + 1;
 				x = Math.log(i) / scale;
@@ -83,10 +85,11 @@ function ExecuteScript()
 			canvasOsci = document.querySelector('#canvasOsci'),
 			canvasSpec = document.querySelector('#canvasSpec'),
 			files = document.querySelector('#AFile');
+		var radEQ=document.getElementsByName('EQ');
+
 		var canvasOsciCtx = canvasOsci.getContext("2d");
 		var canvasSpecCtx = canvasSpec.getContext("2d");
 			
-		
 		var context = new (window.AudioContext || window.webkitAudioContext);
 		Tone.context = context;
 		var aFilter = context.createBiquadFilter();
@@ -102,17 +105,17 @@ function ExecuteScript()
 		
 		var Track, bufferLengthOsci, bufferLengthSpec, analyserOsci, analyserSpec, 
 		dataArrayOsci, dataArraySpec;
-		var now = context.currentTime;
 		analyserOsci = context.createAnalyser();
 		analyserSpec = context.createAnalyser();
+
 		var analyserOsciCheck=false;
 		var analyserSpecCheck=false;
 		var delayCheck=false;
 		var recCheck=false;
+
 		var chunks = [];
 		var file;
 		var button;
-		var radEQ=document.getElementsByName('EQ');
 		
 		panner.addEventListener('input',function(){
 			document.querySelector('#APanVis').textContent=panner.value;
@@ -133,6 +136,17 @@ function ExecuteScript()
 			Tone.connect(pitchShift, aFilter);
 			pitchShift.pitch=pitch.value;
 			document.querySelector("#APitchVis").textContent=pitch.value;
+		});
+
+		pitch.addEventListener('dblclick',function(){
+			pitch.value=0;
+			document.querySelector('#APitchVis').textContent=pitch.value;
+			Tone.disconnect(Track, pitchShift);
+			Tone.disconnect(pitchShift, aFilter);
+			pitchShift = new Tone.PitchShift();
+			Tone.connect(Track, pitchShift);
+			Tone.connect(pitchShift, aFilter);
+			pitchShift.pitch=pitch.value;
 		});
 
 		delay.addEventListener('input', function(){
@@ -210,21 +224,6 @@ function ExecuteScript()
 			aFilter.gain.value=EQgain.value;
 			document.querySelector('#AEQgainVis').textContent=EQgain.value + ' db';
 		});
-
-		pitch.addEventListener('dblclick',function(){
-			pitch.value=0;
-			document.querySelector('#APitchVis').textContent=pitch.value;
-			Tone.disconnect(Track, pitchShift);
-			Tone.disconnect(pitchShift, aFilter);
-			pitchShift = new Tone.PitchShift();
-			Tone.connect(Track, pitchShift);
-			Tone.connect(pitchShift, aFilter);
-			pitchShift.pitch=pitch.value;
-		});
-
-		files.addEventListener('change', function(){
-			audio.src = URL.createObjectURL(this.files[0]);
-		});
 		
 		StopRecBut.addEventListener('click', function(){
 			if (recCheck){
@@ -250,7 +249,7 @@ function ExecuteScript()
 			recCheck=true;
 			audio.currentTime = 0;
 			audio.play();
-			fullRec.value="Идет записть трека целиком";
+			fullRec.value="Идет запись трека целиком";
 			fullRec.disabled=true;
 			mediaRecorder.start();
 			StopRecBut.hidden=false;
@@ -304,6 +303,7 @@ function ExecuteScript()
 		
 		for (i = 0; i < radEQ.length; i++) {
 			button = radEQ[i];
+
 			button.addEventListener('change', function(){
 				if(radEQ[0].checked){
 					aFilter.type='lowpass';
@@ -317,6 +317,27 @@ function ExecuteScript()
 			});
 		}
 		
+		audio.addEventListener('timeupdate', function(){
+			if(!isNaN(audio.currentTime)) {
+				audio.playbackRate = 1;
+			}
+		});
+		
+		volume.addEventListener('input',function(){
+			document.querySelector('#AVolVis').textContent=volume.value;
+			gain.gain.value=volume.value;
+		});
+		
+		volume.addEventListener('dblclick',function(){
+			volume.value=1;
+			document.querySelector('#AVolVis').textContent=volume.value;
+			gain.gain.value=volume.value;
+		});
+
+		files.addEventListener('change', function(){
+			audio.src = URL.createObjectURL(this.files[0]);
+		});
+
 		audio.addEventListener('canplaythrough', function(){
 			context.resume();
 			try{
@@ -364,23 +385,6 @@ function ExecuteScript()
 			catch{}
 		});
 		
-		audio.addEventListener('timeupdate', function(){
-			if(!isNaN(audio.currentTime)) {
-				audio.playbackRate = 1;
-			}
-		});
-		
-		volume.addEventListener('input',function(){
-			document.querySelector('#AVolVis').textContent=volume.value;
-			gain.gain.value=volume.value;
-		});
-		
-		volume.addEventListener('dblclick',function(){
-			volume.value=1;
-			document.querySelector('#AVolVis').textContent=volume.value;
-			gain.gain.value=volume.value;
-		});
-		
 		oscilog.addEventListener('click',function(){
 			if (!analyserOsciCheck)
 			{
@@ -425,6 +429,7 @@ function ExecuteScript()
 				spectra.value="Посмотреть";
 			}
 		});
+
 		function ForceDownload(href, downlname) {
 			var anchor = document.createElement('a');
 			anchor.href = href;

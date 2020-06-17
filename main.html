@@ -2,92 +2,97 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title align="center">Обработай любую песню</title>
+<title align="center">Приложение по обработке аудио</title>
 <!-- <link rel="stylesheet" href="main.css"> -->
 <script src="script.js"></script>
 <script src="https://unpkg.com/tone@13.8.25/build/Tone.js"></script>
+<link rel="stylesheet" href="design/style.css">
+<link rel="shortcut icon" href="#">
 </head>
 <body onload="ExecuteScript()">
-<div>
-	<h2>Это приложение позволяет обработать любую песню</h2>
-</div>
-<div>
-	<h4>Загрузите песню, которую хотите обработать</h4>
-	<form enctype="multipart/form-data" method="post">
-	<p><input id="AFile" type="file" name="audiofile" accept="audio/*">
-	</form>
-</div>
-<div>
-	<audio id="APlay" controls="true"></audio><br>
-</div>
-<div>
-	<h4>Поменять высоту трека</h4>
-	<input id="APitch" type="range" min="-12" value="0" max="12" step="1" disabled="true">
-	<span id="APitchVis">0</span>
-</div>
-<div>
-	<h4>Иcпользуйте эквалайзер</h4>
-	<input id="AEQ" type="range" min="20" value="1000" max="20000" step="1" disabled="true">
-	<span id="AEQVis">1000 Hz</span>
-	<br>
-	<h4>Какой тип фильтра вы хотите использовать</h4>
-	<input type="radio" id="lpFilter" name="EQ" value="Срез высоких частот">
-    <label for="lpFilter">Срез высоких частот</label><br>
-	<input type="radio" id="hpFilter" name="EQ" value="Срез низких частот">
-    <label for="hpFilter">Срез низких частот</label><br>
-	<input type="radio" id="peakFilter" name="EQ" value="Контроль одной частоты" checked>
-		<label for="peakFilter">Контроль одной частоты</label><br>
-	<h4>Насколько усилить или ослабить выбранную частоту</h4>
-	<input type="range" id="EQgain" min="-10" value="0" max="10" step="0.1" disabled="true">
-	<span id="AEQgainVis">0 db</span>
-</div>
-<div>
-	<h4>Используйте компрессор</h4>
-	<input id="ACompTres" type="range" min="-100" value="0" max="0" step="0.1" disabled="true">
-	<span id="ACompTresVis">0 db</span>
-</div>
-<div>
-	<h4>Используйте дилэй</h4>
-	<input type="button" id="ADelayBut" value="Включить дилэй" disabled="true"><br>
-	<input id="ADelay" type="range" min="0.01" value="1" max="4" step="0.01" disabled="true">
-	<span id="ADelayVis">1 s</span><br>
-	<input id="ADelayGain" type="range" min="0" value="0" max="3" step="0.01" disabled="true">
-	<span id="ADelayGainVis">0</span>
-</div>
-<div>
-	<h4>Измените панораму аудиофайла</h4>
-	<input id="APan" type="range" min="-1" value="0" max="1" step="0.01" disabled="true">
-	<span id="APanVis">0</span>
-</div>
-<div>
-	<h4>Измените громкость аудиофайла</h4>
-	<input id="AVol" type="range" min="0" value="1" max="3" step="0.01" disabled="true">
-	<span id="AVolVis">1</span>
-</div>
-<div>
-	<h4>Посмотреть спектрограмму трека</h4>
-	<input id="ASpec" type="button" hidden="true" value="Посмотреть">
-	<br>
-	<canvas id="canvasSpec" width="800" height="275" logarithmic="true">
-	</canvas>
-</div>
-<div>
-	<h4>Посмотреть волну трека</h4>
-	<input id="AOsci" type="button" hidden="true" value="Посмотреть">
-	<br>
-	<canvas id="canvasOsci" width="800" height="300">
-	</canvas>
-</div>
-<div>
-	<h4>Сделать запись</h4>
-	<input id="AStartRec" type="button" hidden="true" value="Начните запись">
-	<input id="AStopRec" type="button" hidden="true" value="Завершить запись">
-	<hr>
-	<input id="AFullTrack" type="button" hidden="true" value="Записать трек целиком">
-	<hr>
-	<input id="ADownl" type="button" hidden="true" value="Скачать запись">
-	<audio id="ANew" controls>Скачать трек</audio><br>
-	<a target = "_blank" href = "https://online-audio-converter.com/ru/">Чтобы переконвертировать файл в нужный формат перейдите по ссылке</a>
-</div>
+		<h2 align="center">Это приложение позволяет обработать любой аудиофайл</h2>
+	<div class="conteiner">
+		<div id="left_block">
+			<div>
+				<h4>Загрузите аудиофайл, который хотите обработать</h4>
+				<form enctype="multipart/form-data" method="post">
+				<p><input id="AFile" type="file" name="audiofile" accept="audio/*">
+				</form>
+			</div>
+			<div>
+				<audio id="APlay" controls="true"></audio><br>
+			</div>
+			<div>
+				<h4>Поменять высоту трека</h4>
+				<input id="APitch" type="range" min="-12" value="0" max="12" step="1" disabled="true">
+				<span id="APitchVis">0</span>
+			</div>
+			<div>
+				<h4>Усилить те или иные частоты</h4>
+				<input id="AEQ" type="range" min="20" value="1000" max="20000" step="1" disabled="true">
+				<span id="AEQVis">1000 Hz</span>
+				<br>
+				<h4>Какой тип фильтра вы хотите использовать</h4>
+				<input type="radio" id="lpFilter" name="EQ" value="Срез высоких частот">
+				<label for="lpFilter">Срез высоких частот</label><br>
+				<input type="radio" id="hpFilter" name="EQ" value="Срез низких частот">
+				<label for="hpFilter">Срез низких частот</label><br>
+				<input type="radio" id="peakFilter" name="EQ" value="Контроль одной частоты" checked>
+					<label for="peakFilter">Контроль одной частоты</label><br>
+				<h4>Насколько усилить или ослабить выбранную частоту</h4>
+				<input type="range" id="EQgain" min="-10" value="0" max="10" step="0.1" disabled="true">
+				<span id="AEQgainVis">0 db</span>
+			</div>
+			<div>
+				<h4>Сжать динамический диапазон сигнала</h4>
+				<input id="ACompTres" type="range" min="-100" value="0" max="0" step="0.1" disabled="true">
+				<span id="ACompTresVis">0 db</span>
+			</div>
+			<div>
+				<h4>Эффект дилэя</h4>
+				<input type="button" id="ADelayBut" value="Включить дилэй" disabled="true"><br>
+				<input id="ADelay" type="range" min="0.01" value="1" max="4" step="0.01" disabled="true">
+				<span id="ADelayVis">1 s</span><br>
+				<input id="ADelayGain" type="range" min="0" value="0" max="3" step="0.01" disabled="true">
+				<span id="ADelayGainVis">0</span>
+			</div>
+			<div>
+				<h4>Панорама аудиофайла</h4>
+				<input id="APan" type="range" min="-1" value="0" max="1" step="0.01" disabled="true">
+				<span id="APanVis">0</span>
+			</div>
+			<div>
+				<h4>Громкость конечного аудиофайла</h4>
+				<input id="AVol" type="range" min="0" value="1" max="3" step="0.01" disabled="true">
+				<span id="AVolVis">1</span>
+			</div>
+			<div id="record">
+				<h4>Сделать запись</h4>
+				<input id="AStartRec" type="button" hidden="true" value="Начните запись">
+				<input id="AStopRec" type="button" hidden="true" value="Завершить запись">
+				<input id="AFullTrack" type="button" hidden="true" value="Записать трек целиком">
+				<input id="ADownl" type="button" hidden="true" value="Скачать запись">
+				<hr>
+				<audio id="ANew" controls>Скачать трек</audio><br>
+				<a id="converter" target = "_blank" href = "https://online-audio-converter.com/ru/">Чтобы переконвертировать файл в нужный формат кликните сюда</a>
+			</div>
+	
+		</div>
+		<div id="right_block">
+			<div>
+				<h4>Посмотреть спектрограмму трека</h4>
+				<input id="ASpec" type="button" hidden="true" value="Посмотреть">
+				<canvas id="canvasSpec" width="600" height="250">
+				</canvas>
+			</div>
+			<div>
+				<h4>Посмотреть волну трека</h4>
+				<input id="AOsci" type="button" hidden="true" value="Посмотреть">
+				<canvas id="canvasOsci" width="600" height="250">
+				</canvas>
+			</div>
+			
+		</div>
+	</div>
 </body>
 </html>

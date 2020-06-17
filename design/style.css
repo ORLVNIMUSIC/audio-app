@@ -1,0 +1,75 @@
+body {
+  color: white;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  height: 90vh;
+  background-image: url(/design/media/giphy2.gif);
+  background-size: 100%;
+}
+
+.conteiner {
+  text-align: center;
+  display: block;
+  height: 100%;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  padding: 0;
+  margin: 1px 0;
+}
+
+input[type=button] {
+  -webkit-transition: 0.2s;
+  transition: 0.2s;
+}
+
+input[type=button]:hover {
+  background-color: #646464;
+}
+
+input[type=button]:disabled {
+  color: white;
+}
+
+#left_block {
+  display: inline-block;
+  width: 49%;
+  min-width: 604px;
+  vertical-align: top;
+}
+
+#left_block #converter {
+  color: white;
+  -webkit-transition: 0.2s;
+  transition: 0.2s;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+#left_block #converter:hover {
+  color: #646464;
+}
+
+#left_block #record {
+  border: 2px solid white;
+}
+
+#right_block {
+  display: inline-block;
+  width: 49%;
+  min-width: 604px;
+  vertical-align: top;
+  margin-top: 0;
+}
+
+#right_block h4 {
+  margin: 10px 0;
+}
+
+#right_block canvas {
+  display: block;
+  border: 2px solid white;
+  margin: auto;
+}
+/*# sourceMappingURL=style.css.map */
