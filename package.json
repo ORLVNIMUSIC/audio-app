@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/ORLVNIMUSIC/audio-app/issues"
   },
-  "homepage": "https://github.com/ORLVNIMUSIC/audio-app#readme"
+  "homepage": "https://github.com/ORLVNIMUSIC/audio-app#readme",
+  "dependencies": {
+    "serve": "^14.1.1"
+  }
 }
