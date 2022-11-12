@@ -14,17 +14,19 @@ function ExecuteScript()
 		function drawOsci() {
 			drawVisual = requestAnimationFrame(drawOsci);
 			analyserOsci.getByteTimeDomainData(dataArrayOsci);
-			canvasOsciCtx.fillStyle = 'rgb(100, 100, 100)';
+			canvasOsciCtx.canvas.height = canvasOsci.getBoundingClientRect().height;
+			canvasOsciCtx.canvas.width = canvasOsci.getBoundingClientRect().width;
+
+			canvasOsciCtx.fillStyle = 'rgba(256, 256, 256, 0.8)';
 			canvasOsciCtx.fillRect(0, 0, canvasOsci.width, canvasOsci.height);	
 			canvasOsciCtx.lineWidth = 2;
-			canvasOsciCtx.strokeStyle = 'rgb(255, 255, 255)';
+			canvasOsciCtx.strokeStyle = 'rgb(255, 0, 0)';
 
 			canvasOsciCtx.beginPath();
-			var sliceWidth = canvasOsci.width * 1.0 / bufferLengthOsci;
+			var sliceWidth = canvasOsci.width / bufferLengthOsci;
 			var x = 0;
 			for(var i = 0; i < bufferLengthOsci; i++) {
-				var v = dataArrayOsci[i] / 128.0;
-				var y = v * canvasOsci.height/2;
+				var y = dataArrayOsci[i] * canvasOsci.height / 256;
 
 				if(i === 0) {
 					canvasOsciCtx.moveTo(x, y);
@@ -34,34 +36,40 @@ function ExecuteScript()
 
 				x += sliceWidth;
 			}
-			canvasOsciCtx.lineTo(canvasOsci.width, canvasOsci.height/2); //тут делили на два высоту
+			canvasOsciCtx.lineTo(canvasOsci.width, canvasOsci.height/2);
 			canvasOsciCtx.stroke();
 		};	
 		
 		function drawSpec() {
 			drawVisual = requestAnimationFrame(drawSpec);
 			analyserSpec.getByteFrequencyData(dataArraySpec);
-			canvasSpecCtx.fillStyle = 'rgb(100, 100, 100)';
-			var canvasWidth = parseInt(window.getComputedStyle(canvasSpec).width);
-			var canvasHeight = parseInt(window.getComputedStyle(canvasSpec).height);
+			var canvasWidth = canvasSpec.getBoundingClientRect().width;
+			var canvasHeight = canvasSpec.getBoundingClientRect().height;
+			canvasSpecCtx.canvas.height = canvasHeight;
+			canvasSpecCtx.canvas.width = canvasWidth;
+			console.log(canvasSpecCtx.canvas.width, canvasWidth)
+
+			canvasSpecCtx.fillStyle = 'rgba(256, 256, 256, 0.8)';
+
 			canvasSpecCtx.fillRect(0, 0, canvasWidth, canvasHeight);	
-			var barWidth = (canvasWidth / bufferLengthSpec)*3;	// тут вот надо сделать логарифм (было: var barWidth = (canvasSpec.width / bufferLengthSpec)*2.5;
+			var barWidth = (canvasWidth / bufferLengthSpec);	
 			var barHeight;
 			var x=0;
-			var scale = Math.log(bufferLengthSpec-1) / canvasWidth;
+			const maxDataArraySpec = 256
 			
 			canvasSpecCtx.beginPath();
-			canvasSpecCtx.moveTo(x+barWidth,canvasHeight-dataArraySpec[0]);
+			canvasSpecCtx.moveTo(x + barWidth,canvasHeight - dataArraySpec[0]);
 			
-			for (var i=0; i<bufferLengthSpec; i++)
+			for (var i = 1; i<bufferLengthSpec; i++)
 			{
-				barHeight = dataArraySpec[i]*1.7;
-				canvasSpecCtx.fillStyle = 'rgb(' + (barHeight+100) + ',255,255)';
-				canvasSpecCtx.fillRect(x,canvasHeight-barHeight/2,barWidth,barHeight);
-				canvasSpecCtx.lineTo(x,canvasHeight-barHeight/2);
+				barHeight = dataArraySpec[i] / maxDataArraySpec * canvasHeight - 20;
+				canvasSpecCtx.fillStyle = 'rgb(' + (barHeight + 100) + ',0,0)';
+				canvasSpecCtx.fillRect(x, canvasHeight - barHeight, barWidth, barHeight);
+				
+				canvasSpecCtx.lineTo(x, canvasHeight - barHeight);
 				// canvasSpecCtx.moveTo(x+barWidth,canvasSpec.height-dataArraySpec[0]);
 				// x += barWidth + 1;
-				x = Math.log(i) / scale;
+				x = Math.log(i) * (canvasWidth / Math.log(bufferLengthSpec));
 			}
 			canvasSpecCtx.stroke();
 		};	
@@ -389,7 +397,7 @@ function ExecuteScript()
 			if (!analyserOsciCheck)
 			{
 				gain.connect(analyserOsci);
-				analyserOsci.fftSize = 1024*8;  //32kb максимальное значение для анализатора
+				analyserOsci.fftSize = 1024*16;  //32kb максимальное значение для анализатора
 				analyserOsci.maxDecibels=0;
 				analyserOsci.minDecibels=-200;
 				bufferLengthOsci = analyserOsci.frequencyBinCount;
@@ -416,8 +424,7 @@ function ExecuteScript()
 				analyserSpec.maxDecibels=-20;
 				bufferLengthSpec = analyserSpec.frequencyBinCount;
 				dataArraySpec = new Uint8Array(bufferLengthSpec);
-				
-				canvasSpecCtx.clearRect(0, 0, canvasSpec.width, canvasSpec.height);	
+				canvasSpecCtx.clearRect(0, 0, canvasSpec.getBoundingClientRect().width, canvasSpec.getBoundingClientRect().height);	
 				drawSpec();
 				analyserSpecCheck=true;
 				spectra.value="Выключить";
