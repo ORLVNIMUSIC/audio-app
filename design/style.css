@@ -73,3 +73,10 @@ input[type=button]:disabled {
   margin: auto;
 }
 /*# sourceMappingURL=style.css.map */
+
+canvas{
+  display: relative;
+  box-sizing: border-box;
+  width: 600px;
+  height: 250px;
+}

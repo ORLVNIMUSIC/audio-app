@@ -15,16 +15,16 @@ function ExecuteScript()
 			drawVisual = requestAnimationFrame(drawOsci);
 			analyserOsci.getByteTimeDomainData(dataArrayOsci);
 			canvasOsciCtx.fillStyle = 'rgb(100, 100, 100)';
-			canvasOsciCtx.fillRect(0, 0, canvasOsci.width, canvasOsci.height);	
+			canvasOsciCtx.fillRect(0, 0, canvasOsci.getBoundingClientRect().width, canvasOsci.getBoundingClientRect().height);	
 			canvasOsciCtx.lineWidth = 2;
 			canvasOsciCtx.strokeStyle = 'rgb(255, 255, 255)';
 
 			canvasOsciCtx.beginPath();
-			var sliceWidth = canvasOsci.width * 1.0 / bufferLengthOsci;
+			var sliceWidth = canvasOsci.getBoundingClientRect().width * 1.0 / bufferLengthOsci;
 			var x = 0;
 			for(var i = 0; i < bufferLengthOsci; i++) {
 				var v = dataArrayOsci[i] / 128.0;
-				var y = v * canvasOsci.height/2;
+				var y = v * canvasOsci.getBoundingClientRect().height/2;
 
 				if(i === 0) {
 					canvasOsciCtx.moveTo(x, y);
@@ -34,7 +34,7 @@ function ExecuteScript()
 
 				x += sliceWidth;
 			}
-			canvasOsciCtx.lineTo(canvasOsci.width, canvasOsci.height/2); //тут делили на два высоту
+			canvasOsciCtx.lineTo(canvasOsci.getBoundingClientRect().width, canvasOsci.getBoundingClientRect().height/2); //тут делили на два высоту
 			canvasOsciCtx.stroke();
 		};	
 		
@@ -42,18 +42,20 @@ function ExecuteScript()
 			drawVisual = requestAnimationFrame(drawSpec);
 			analyserSpec.getByteFrequencyData(dataArraySpec);
 			canvasSpecCtx.fillStyle = 'rgb(100, 100, 100)';
-			var canvasWidth = parseInt(window.getComputedStyle(canvasSpec).width);
-			var canvasHeight = parseInt(window.getComputedStyle(canvasSpec).height);
+			var canvasWidth = canvasSpec.getBoundingClientRect().width;
+			var canvasHeight = canvasSpec.getBoundingClientRect().height;
+
+			console.log(canvasWidth,canvasHeight)
 			canvasSpecCtx.fillRect(0, 0, canvasWidth, canvasHeight);	
-			var barWidth = (canvasWidth / bufferLengthSpec)*3;	// тут вот надо сделать логарифм (было: var barWidth = (canvasSpec.width / bufferLengthSpec)*2.5;
+			var barWidth = (canvasWidth / bufferLengthSpec);	// тут вот надо сделать логарифм (было: var barWidth = (canvasSpec.width / bufferLengthSpec)*2.5;
 			var barHeight;
 			var x=0;
-			var scale = Math.log(bufferLengthSpec-1) / canvasWidth;
+			var scale = canvasWidth / bufferLengthSpec;
 			
 			canvasSpecCtx.beginPath();
 			canvasSpecCtx.moveTo(x+barWidth,canvasHeight-dataArraySpec[0]);
 			
-			for (var i=0; i<bufferLengthSpec; i++)
+			for (var i=0; i < bufferLengthSpec; i++)
 			{
 				barHeight = dataArraySpec[i]*1.7;
 				canvasSpecCtx.fillStyle = 'rgb(' + (barHeight+100) + ',255,255)';
@@ -61,7 +63,8 @@ function ExecuteScript()
 				canvasSpecCtx.lineTo(x,canvasHeight-barHeight/2);
 				// canvasSpecCtx.moveTo(x+barWidth,canvasSpec.height-dataArraySpec[0]);
 				// x += barWidth + 1;
-				x = Math.log(i) / scale;
+				if (i % 200 === 0) console.log(x)
+				x += scale * i;
 			}
 			canvasSpecCtx.stroke();
 		};	
@@ -395,7 +398,7 @@ function ExecuteScript()
 				bufferLengthOsci = analyserOsci.frequencyBinCount;
 				dataArrayOsci = new Uint8Array(bufferLengthOsci);
 				
-				canvasOsciCtx.clearRect(0, 0, canvasOsci.width, canvasOsci.height);	
+				canvasOsciCtx.clearRect(0, 0, canvasOsci.getBoundingClientRect().width, canvasOsci.getBoundingClientRect().height);	
 				drawOsci();
 				analyserOsciCheck=true;
 				oscilog.value="Выключить";
@@ -417,7 +420,7 @@ function ExecuteScript()
 				bufferLengthSpec = analyserSpec.frequencyBinCount;
 				dataArraySpec = new Uint8Array(bufferLengthSpec);
 				
-				canvasSpecCtx.clearRect(0, 0, canvasSpec.width, canvasSpec.height);	
+				canvasSpecCtx.clearRect(0, 0, canvasSpec.getBoundingClientRect().width, canvasSpec.getBoundingClientRect().height);	
 				drawSpec();
 				analyserSpecCheck=true;
 				spectra.value="Выключить";
