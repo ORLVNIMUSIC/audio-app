@@ -1,0 +1,20 @@
+{
+  "name": "audio-app",
+  "version": "1.0.0",
+  "description": "Audio app using Web Audio API",
+  "main": "main.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "serve"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ORLVNIMUSIC/audio-app.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ORLVNIMUSIC/audio-app/issues"
+  },
+  "homepage": "https://github.com/ORLVNIMUSIC/audio-app#readme"
+}
